@@ -1,0 +1,357 @@
+
+
+```{r}
+
+rm(list=ls())
+#Load the Dataset
+
+bmd <- read.csv("C:/Users/ashis/Downloads/Course Work/BIA-652B Multivariate Data Analysis/Project Proposal/Dataset/bank-additional/bank-additional.csv",
+                sep = ";", stringsAsFactors = FALSE)
+bmd_full <- read.csv("C:/Users/ashis/Downloads/Course Work/BIA-652B Multivariate Data Analysis/Project Proposal/Dataset/bank-additional/bank-additional-full.csv",
+                     sep=";", stringsAsFactors = FALSE)
+str(bmd_full) #TList the structure of data
+View(bmd_full)
+
+
+
+#To check if the data is clean or not
+any(is.na(bmd_full))
+
+#to view sample of dataset 
+head(bmd_full,n=10)
+
+#Insatalling packages to make everything look attractive
+#install.packages("ggplot2") # plotting
+#install.packages("knitr") # report formatting
+#install.packages("cluster") # kmeans clustering
+#install.packages("HSAUR") # silhouette plotting
+#install.packages("fpc") # numbers cluster plot
+#install.packages("lattice") # cluster plotting
+#install.packages("rpart") # Decision Tress data classification
+#install.packages("kernlab") # Support Vector Machines machine learning
+#install.packages("randomForest") # Random Forest machine learning
+
+
+library(ggplot2)
+library(knitr)
+library(cluster)
+library(HSAUR)
+library(fpc)
+library(lattice)
+library(rpart)
+library(kernlab)
+library(randomForest)
+
+
+#Summary
+summary(bmd_full)
+
+#To displays most of the numerical attributes from summary, missing values, 
+#more quantile information and an inline histogram for each variable
+install.packages("skimr")
+library(skimr)
+skim(bmd_full)
+
+#for dimensios of dataset
+dim(bmd_full)
+
+library(dplyr) 
+glimpse(bmd_full)
+
+
+
+# Marital Unknown
+library(modeest)
+a <- mfv(bmd_full$marital)
+View(a)
+#stacked plot
+#Marital 
+ggplot(bmd_full, aes(marital, fill = marital)) + geom_bar() + labs(title = "Bank Additional - Marital")
+
+#Education
+ggplot(bmd_full,aes(education, fill=education)) + geom_bar() + labs(title = "Bank Additional - Education")
+
+#age
+#density plot
+ggplot(bmd_full,aes(age, fill=age)) + geom_density(fill='mediumorchid1') + labs(title = "Bank Additional - Age")
+
+#job
+ggplot(bmd_full,aes(job, fill=job)) + geom_bar() + labs(title = "Bank Additional - Job")
+
+#Job vs education
+ggplot(bmd_full,aes(x= job, fill = education)) + geom_bar() + labs(title = "Job vs Education", x="JOB", y="EDUCATION")
+
+#Heat Map (for 3 or more variables)
+ggplot(bmd_full, aes(x = job, y = education))+
+geom_raster(aes(fill = age))+
+labs(title ="Heat Map", x = "JOB", y = "Education")
+
+#Loan Heat Map
+ggplot(bmd_full, aes(x = job, y = education))+
+  geom_raster(aes(fill = loan))+
+  labs(title ="Heat Map", x = "JOB", y = "Education")
+
+#Jobs with university degree
+ggplot(bmd_full, aes(job, fill = job)) + geom_bar() + labs(title = "Jobs with University Degree")
+
+install.packages("frequency")
+
+#Frequency Table
+
+
+
+########Clustering########
+
+#Dataset with 6 variables
+a <- as.factor(bmd_full$age)
+b <- as.factor(bmd_full$job)
+c <- as.factor(bmd_full$marital)
+d <- as.factor(bmd_full$education)
+e <- as.factor(bmd_full$housing)
+f <- as.factor(bmd_full$loan)
+
+
+new_bmd_full <- data.frame(as.numeric(a),as.numeric(b),as.numeric(c),
+                           as.numeric(d),as.numeric(e),as.numeric(f))
+
+#Rename the ColNames
+
+colnames(new_bmd_full) <- c("AGE","JOB","MARITAL","EDUCATION","HOUSING","LOAN")
+View(new_bmd_full)
+
+#Reduce the amount of dataset records for legibility within clusters
+bmd_full_2 <- new_bmd_full[sample(nrow(new_bmd_full),500),]
+
+#K means CLustering with 5 Cluster
+set.seed(12345)
+bmd_full_k5 <- kmeans(bmd_full_2, centers = 5)
+
+library(cluster) 
+clusplot(bmd_full_2, bmd_full_k5$cluster, color=TRUE, shade=TRUE, 
+         labels=0, lines=0)
+
+# Model Based Clustering
+library(mclust)
+fit <- Mclust(bmd_full_2)
+plot(fit) # plot results 
+summary(fit) # display the best model
+
+# Centroid Plot against 1st 2 discriminant functions
+library(fpc)
+plotcluster(bmd_full_2 , bmd_full_k5$cluster)
+
+
+#####Data Correllation Analysis######
+
+#COrrelation of age vs y
+x <- as.numeric(as.factor(bmd$age))
+y <- as.numeric(as.factor(bmd$y))
+res <- cor.test(x,y, method = "pearson") 
+res
+
+#COrrelation of job vs y
+x1 <- as.numeric(as.factor(bmd$job))
+y1 <- as.numeric(as.factor(bmd$y))
+res1 <- cor.test(x1,y1, method = "pearson") 
+res1
+
+#Correlation of Marital vs Y
+x2 <- as.numeric(as.factor(bmd$marital))
+y2 <- as.numeric(as.factor(bmd$y))
+res2 <- cor.test(x2,y2, method = "pearson") 
+res2
+#Correlation of Education vs Y
+x3 <- as.numeric(as.factor(bmd$education))
+y3 <- as.numeric(as.factor(bmd$y))
+res3 <- cor.test(x3,y3, method = "pearson") 
+res3
+#correlation of Housing vs Y
+x4 <- as.numeric(as.factor(bmd$housing))
+y4 <- as.numeric(as.factor(bmd$y))
+res4 <- cor.test(x4,y4, method = "pearson") 
+res4
+#correlation of Loan vs Y
+x5 <- as.numeric(as.factor(bmd$loan))
+y5 <- as.numeric(as.factor(bmd$y))
+res5 <- cor.test(x5,y5, method = "pearson") 
+res5
+
+
+#install.packages("ggcorrplot")
+
+corr <- cor(bmd_full_2)
+head(bmd_full_2)
+library(ggcorrplot)
+ggcorrplot(corr)
+
+
+####Predictive analysis using SVM(Support Vector Machine)######
+# the coefficients of SVM correlation, and the results of each trial are displayed for comparison
+#then the accuracy of SVM predictions of Term Deposit is compared with the actual Term Deposit values
+
+form <- as.formula(as.numeric(as.factor(bmd_full$y)) ~ new_bmd_full$HOUSING + new_bmd_full$LOAN)
+length(bmd_full$y)
+length(new_bmd_full$HOUSING)
+#install.packages("kernlab")
+library(kernlab)
+
+svp <- ksvm(form, new_bmd_full)
+svp@scaling$y.scale
+
+#predict term deposit
+Predict_bmd_full <- predict(svp, new_bmd_full)
+Predict_bmd_full
+
+# Compare the accuracy of first 100 predictions
+head(data.frame(bmd_full$y, Predict_bmd_full), 100)
+
+
+library(randomForest)
+fitRF <- randomForest(form , new_bmd_full)
+
+##### preditive analysis using Random Forest####
+
+# Fit Correlation Model
+fitRF <- randomForest(form , new_bmd_full)
+
+data.frame(fitRF$importance)
+
+#predict Term Deposit 
+RFPredict <- predict(fitRF,new_bmd_full)
+
+# Compare Accuracy of Predictions
+head(data.frame(bmd_full$y, RFPredict), 10)
+
+
+
+
+#####Machine Learning of Bank Additional Data, with Cross-Validation#####
+
+#Going ahead with Random Forest Algorithm
+
+#Make Training Dataset
+Training <- data.frame(as.numeric(as.factor(bmd_full$y)),
+                       as.numeric(as.factor(bmd_full$age)),
+                       as.numeric(as.factor(bmd_full$job)),
+                       as.numeric(as.factor(bmd_full$marital)),
+                       as.numeric(as.factor(bmd_full$education)),
+                       as.numeric(as.factor(bmd_full$housing)),
+                       as.numeric(as.factor(bmd_full$loan))
+                       )
+colnames(Training) <- c("Term Deposit","AGE","JOB","MARITAL","EDUCATION","HOUSING","LOAN")
+View(Training)
+
+Test <- data.frame(as.numeric(as.factor(bmd$y)),
+                   as.numeric(as.factor(bmd$age)),
+                   as.numeric(as.factor(bmd$job)),
+                   as.numeric(as.factor(bmd$marital)),
+                   as.numeric(as.factor(bmd$education)),
+                   as.numeric(as.factor(bmd$housing)),
+                   as.numeric(as.factor(bmd$loan))
+                   )
+colnames(Test) <- c("Term Deposit","AGE","JOB","MARITAL","EDUCATION","HOUSING","LOAN")
+View(Test)
+
+#Formula for Random forest prediction
+formRF <- as.formula(Training$`Term Deposit`~ HOUSING + LOAN)
+
+#Fit Predictive Model
+library(randomForest)
+fitRFnew <- randomForest(formRF,data = Training, ntree = 100, importance = TRUE)
+summary(fitRFnew)
+
+plot(fitRFnew)
+
+# Machine Learning Coefficients of Independent Variables
+kable(data.frame(fitRFnew$importance), caption = "Machine Learning Coefficients of Independent Variables")
+
+
+# Predict response of client
+bmd_model <- predict(fitRFnew, newdata = Test)
+
+
+fitnew <- fitted(bmd_model)
+fitnew
+table(Test$`Term Deposit` , bmd_model)
+
+#check accuracy
+accuracy <- Test==fitnew
+100*(sum(accuracy)/length(accuracy))
+
+#############################
+# Calculate the Accuracy, Precision and Recall
+# Calculate the Confusion Matrix
+
+cm <- as.matrix(table(Actual = Test$`Term Deposit`, Predicted = bmd_model))
+kable(cm, caption = "Confusion Matrix")
+
+diag <- diag(cm)
+accuracy <- sum(diag)/sum(cm)
+
+
+
+
+# Match Numeric variables to Categorical variables in order to convert numeric data
+# back into categorical data
+Term_DepositIds <- data.frame(V1 = unique(as.numeric(as.factor(bmd_full$y))),
+                              V2 =unique(bmd_full$y))
+
+AgeIds <- data.frame(V1 = unique(as.numeric(as.factor(bmd_full$age))),
+                     V2 =unique(bmd_full$age))
+
+JobIds <- data.frame(V1 = unique(as.numeric(as.factor(bmd_full$job))),
+                     V2 =unique(bmd_full$job))
+
+MaritalIds <- data.frame(V1 = unique(as.numeric(as.factor(bmd_full$marital))),
+                         V2 =unique(bmd_full$marital))
+
+EducationIds <- data.frame(V1 = unique(as.numeric(as.factor(bmd_full$education))),
+                           V2 =unique(bmd_full$education))
+
+HousingIds <- data.frame(V1 = unique(as.numeric(as.factor(bmd_full$housing))),
+                         V2 =unique(bmd_full$housing))
+
+LoanIds <- data.frame(V1 = unique(as.numeric(as.factor(bmd_full$loan))),
+                      V2 =unique(bmd_full$loan))
+
+td <- lapply(bmd_full$y, function(x) setNames(Term_DepositIds$V1, Term_DepositIds$V2)[x])
+Test$`Term Deposit`<- names(unlist(td))
+
+ag <- lapply(bmd_full$age, function(x) setNames(AgeIds$V1, AgeIds$V2)[x])
+Test$AGE <- names(unlist(ag))
+
+jb <- lapply(bmd_full$job, function(x) setNames(JobIds$V1, JobIds$V2)[x])
+Test$JOB <- names(unlist(jb))
+
+mr <- lapply(bmd_full$marital, function(x) setNames(MaritalIds$V1, MaritalIds$V2)[x])
+Test$MARITAL <- names(unlist(mr))
+
+ed <- lapply(bmd_full$education, function(x) setNames(EducationIds$V1, EducationIds$V2)[x])
+Test$EDUCATION <- names(unlist(ed))
+
+hs <- lapply(bmd_full$housing, function(x) setNames(HousingIds$V1, HousingIds$V2)[x])
+Test$HOUSING <- names(unlist(hs))
+
+ln <- lapply(bmd_full$loan, function(x) setNames(LoanIds$V1, LoanIds$V2)[x])
+Test$LOAN <- names(unlist(ln))
+
+# Create Final Analysis Table
+FinalAnalysis <- data.frame(Test$AGE, Test$Job,
+                            Test$Marital, Test$Education,
+                            Test$Housing, Test$Loan,
+                            Test$Term_Deposit, bmd_model)
+
+names(FinalAnalysis) <- c("Age", "Job", "Marital", "Education",
+                          "Housing", "Loan", "Actual Term Deposit",
+                          "Predicted Term Deposit")
+
+
+
+
+
+
+
+
+
+```
+

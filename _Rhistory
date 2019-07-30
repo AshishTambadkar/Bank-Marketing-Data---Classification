@@ -1,0 +1,512 @@
+Test$Medical_History_10[is.na(Test$Medical_History_10)]<-median(Test$Medical_History_10, na.rm = TRUE)
+Test$Medical_History_15[is.na(Test$Medical_History_15)]<-median(Test$Medical_History_15, na.rm = TRUE)
+Test$Medical_History_24[is.na(Test$Medical_History_24)]<-median(Test$Medical_History_24, na.rm = TRUE)
+Test$Medical_History_32[is.na(Test$Medical_History_32)]<-median(Test$Medical_History_32, na.rm = TRUE)
+View(Test)
+View(Training)
+summary(Training)
+Training$InsuredInfo_5[is.na(Training$InsuredInfo_5)]<-mean(Training$InsuredInfo_5, na.rm = TRUE)
+Test$InsuredInfo_5[is.na(Test$InsuredInfo_5)]<-mean(Test$InsuredInfo_5, na.rm = TRUE)
+View(Test)
+any(is.na(Test))
+Test$Insurance_History_5[is.na(Test$Insurance_History_5)]<-mean(Test$Insurance_History_5, na.rm = TRUE)
+View(Test)
+any(is.na(Test))
+Training$Insurance_History_5[is.na(Training$Insurance_History_5)]<-mean(TTraining$Insurance_History_5, na.rm = TRUE)
+Training$Insurance_History_5[is.na(Training$Insurance_History_5)]<-mean(Training$Insurance_History_5, na.rm = TRUE)
+View(Training)
+any(is.na(Training))
+View(Training)
+Training$Employment_Info_6[is.na(Training$Employment_Info_6)]<-mean(Training$Employment_Info_6, na.rm = TRUE)
+Training$Employment_Info_1[is.na(Training$Employment_Info_1)]<-mean(Training$Employment_Info_1, na.rm = TRUE)
+Training$Employment_Info_4[is.na(Training$Employment_Info_4)]<-mean(Training$Employment_Info_4, na.rm = TRUE)
+Training$Employment_Info_6[is.na(Training$Employment_Info_6)]<-mean(Training$Employment_Info_6, na.rm = TRUE)
+Training$InsuredInfo_5[is.na(Training$InsuredInfo_5)]<-mean(Training$InsuredInfo_5, na.rm = TRUE)
+Training$Family_Hist_2[is.na(Training$Family_Hist_2)]<-mean(Training$Family_Hist_2, na.rm = TRUE)
+Training$Family_Hist_3[is.na(Training$Family_Hist_3)]<-mean(Training$Family_Hist_3, na.rm = TRUE)
+Training$Family_Hist_4[is.na(Training$Family_Hist_4)]<-mean(Training$Family_Hist_4, na.rm = TRUE)
+Training$Family_Hist_5[is.na(Training$Family_Hist_5)]<-mean(Training$Family_Hist_5, na.rm = TRUE)
+Training$Insurance_History_5[is.na(Training$Insurance_History_5)]<-mean(Training$Insurance_History_5, na.rm = TRUE)
+Training$Medical_History_1[is.na(Training$Medical_History_1)]<-median(Training$Medical_History_1, na.rm = TRUE)
+Training$Medical_History_10[is.na(Training$Medical_History_10)]<-median(Training$Medical_History_10, na.rm = TRUE)
+Training$Medical_History_15[is.na(Training$Medical_History_15)]<-median(Training$Medical_History_15, na.rm = TRUE)
+Training$Medical_History_24[is.na(Training$Medical_History_24)]<-median(Training$Medical_History_24, na.rm = TRUE)
+Training$Medical_History_32[is.na(Training$Medical_History_32)]<-median(Training$Medical_History_32, na.rm = TRUE)
+View(Training)
+any(is.na(Training))
+#Define max-min normalization function
+mmnorm <-function(x,minx,maxx) {z<-((x-minx)/(maxx-minx))
+return(z)
+}
+library(kknn)
+#Taking k=3
+predict3 <- kknn(formula = Class~. , Training,Test, k=3, kernel = "rectangular")
+#Create Random Indexes
+index<- seq(1,nrow(Training), by = 5)
+index
+#Create Training dataset(75% of data)
+training <- x[index,]
+#Create Training dataset(75% of data)
+training <- Training[index,]
+#create test datset
+test <- Training[-index,]
+View(test)
+library(kknn)
+#Taking k=3
+predict3 <- kknn(formula = Response~. , training,test, k=3, kernel = "rectangular")
+predict3
+fit3 <- fitted(predict3)
+fit3
+table(Test$Class , fit3)
+table(test$Response , fit3)
+#check accuracy for k=3
+accuracy3<- test$Response==fit3
+100*(sum(accuracy3)/length(accuracy3))
+#Create Training dataset
+training <- Training[,c(4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,21,24,26,28,29,31,32,33,34,40,42,47,54,61,63,64,67,74,79,80)]
+#Create Test dataset
+test <- Test[,c(4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,21,24,26,28,29,31,32,33,34,40,42,47,54,61,63,64,67,74,79,80)]
+#Taking k=3
+predict3 <- kknn(formula = Response~. , training,test, k=3, kernel = "rectangular")
+View(Training)
+#Create Training dataset
+training <- Training[,c(4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,21,24,26,28,29,31,32,33,34,40,42,47,54,61,63,64,67,74,79,80,128)]
+#Create Test dataset
+test <- Test[,c(4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,21,24,26,28,29,31,32,33,34,40,42,47,54,61,63,64,67,74,79,80,128)]
+View(Test)
+#Create Test dataset
+test <- Test[,c(4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,21,24,26,28,29,31,32,33,34,40,42,47,54,61,63,64,67,74,79,80)]
+#Taking k=3
+predict3 <- kknn(formula = Response~. , training,test, k=3, kernel = "rectangular")
+predict3
+fit3 <- fitted(predict3)
+fit3
+table(test$Response , fit3)
+fit3
+test$Response
+test$Response <- as.factor(test$Response)
+training$Response <- as.factor(training$Response)
+skim(TD)
+#Create Random Indexes
+index<- sort(sample(nrow(Training),as.integer(0.75*nrow(Training))))
+#Create Training dataset(75% of data)
+training <- Training[index,]
+#create test datset(25% of data)
+test <- Test[-index,]
+#create test datset(25% of data)
+test <- Training[-index,]
+library(kknn)
+#Taking k=3
+predict3 <- kknn(formula = Response~. , training,test, k=3, kernel = "rectangular")
+predict3
+fit3 <- fitted(predict3)
+fit3
+table(test$Response , fit3)
+#check accuracy for k=3
+accuracy3<- test$Response==fit3
+100*(sum(accuracy3)/length(accuracy3))
+#Taking k=3
+predict3 <- kknn(formula = Response~. , training,test, k=3, kernel = "triangular")
+fit3 <- fitted(predict3)
+table(test$Response , fit3)
+#check accuracy for k=3
+accuracy3<- test$Response==fit3
+100*(sum(accuracy3)/length(accuracy3))
+data <- data.frame(Training)
+View(data)
+newdata <- data[,1:127]
+View(newdata)
+PCA <- princomp(~newdata, data = data, cor = TRUE, scores = TRUE)
+PCA <- princomp(~data[,1:127], data = data, cor = TRUE, scores = TRUE)
+newdata <- read.csv("C:/Users/ashis/Downloads/Course Work/CS-513A Knowledge Discovery and Data Mining/Project/Project/train1.csv", na.strings = c("",NA))
+View(newdata)
+?princomp()
+newdata <- data.frame(newdata)
+PCA <- princomp(newdata, cor = TRUE, scores = TRUE)
+newdata <- as.factor(newdata)
+PCA <- princomp(newdata, cor = TRUE, scores = TRUE)
+#Taking k=3
+predict3 <- kknn(formula = Response~. , training,test, k=25)
+library(kknn)
+#Taking k=3
+predict3 <- kknn(formula = Response~. , training,test, k=25)
+fit3 <- fitted(predict3)
+table(test$Response , fit3)
+#check accuracy for k=3
+accuracy3<- test$Response==fit3
+100*(sum(accuracy3)/length(accuracy3))
+Training.pca <- prcomp(Training, center = TRUE, scale.= TRUE)
+is.numeric(Training)
+str(Training)
+new_training <- as.numeric(as.factor(Training))
+is.numeric(new_training)
+Training.pca <- prcomp(new_training, center = TRUE, scale.= TRUE)
+summary(Training.pca)
+new_training
+new_training <- as.numeric(Training)
+str(Training.pca)
+rm(list=ls())
+#Load the Dataset
+Training <- read.csv("C:/Users/ashis/Downloads/Course Work/CS-513A Knowledge Discovery and Data Mining/Project/Project/train.csv", na.strings = c("",NA))
+Test <-  read.csv("C:/Users/ashis/Downloads/Course Work/CS-513A Knowledge Discovery and Data Mining/Project/Project/test.csv", na.strings = c("",NA))
+#check NA's
+any(is.na(Training))
+#Data Cleaning in Training Dataset
+library(skimr)
+summary(Training)
+TD <- read.csv("C:/Users/ashis/Downloads/Course Work/CS-513A Knowledge Discovery and Data Mining/Project/Project/train.csv")
+skim(TD)
+Training$Employment_Info_1[is.na(Training$Employment_Info_1)]<-mean(Training$Employment_Info_1, na.rm = TRUE)
+Training$Employment_Info_4[is.na(Training$Employment_Info_4)]<-mean(Training$Employment_Info_4, na.rm = TRUE)
+Training$Employment_Info_6[is.na(Training$Employment_Info_6)]<-mean(Training$Employment_Info_6, na.rm = TRUE)
+Training$InsuredInfo_5[is.na(Training$InsuredInfo_5)]<-mean(Training$InsuredInfo_5, na.rm = TRUE)
+Training$Family_Hist_2[is.na(Training$Family_Hist_2)]<-mean(Training$Family_Hist_2, na.rm = TRUE)
+Training$Family_Hist_3[is.na(Training$Family_Hist_3)]<-mean(Training$Family_Hist_3, na.rm = TRUE)
+Training$Family_Hist_4[is.na(Training$Family_Hist_4)]<-mean(Training$Family_Hist_4, na.rm = TRUE)
+Training$Family_Hist_5[is.na(Training$Family_Hist_5)]<-mean(Training$Family_Hist_5, na.rm = TRUE)
+Training$Insurance_History_5[is.na(Training$Insurance_History_5)]<-mean(Training$Insurance_History_5, na.rm = TRUE)
+Training$Medical_History_1[is.na(Training$Medical_History_1)]<-median(Training$Medical_History_1, na.rm = TRUE)
+Training$Medical_History_10[is.na(Training$Medical_History_10)]<-median(Training$Medical_History_10, na.rm = TRUE)
+Training$Medical_History_15[is.na(Training$Medical_History_15)]<-median(Training$Medical_History_15, na.rm = TRUE)
+Training$Medical_History_24[is.na(Training$Medical_History_24)]<-median(Training$Medical_History_24, na.rm = TRUE)
+Training$Medical_History_32[is.na(Training$Medical_History_32)]<-median(Training$Medical_History_32, na.rm = TRUE)
+View(Training)
+any(is.na(Training))
+Test$Employment_Info_1[is.na(Test$Employment_Info_1)]<-mean(Test$Employment_Info_1, na.rm = TRUE)
+Test$Employment_Info_4[is.na(Test$Employment_Info_4)]<-mean(Test$Employment_Info_4, na.rm = TRUE)
+Test$Employment_Info_6[is.na(Test$Employment_Info_6)]<-mean(Test$Employment_Info_6, na.rm = TRUE)
+Test$InsuredInfo_5[is.na(Test$InsuredInfo_5)]<-mean(Test$InsuredInfo_5, na.rm = TRUE)
+Test$Family_Hist_2[is.na(Test$Family_Hist_2)]<-mean(Test$Family_Hist_2, na.rm = TRUE)
+Test$Family_Hist_3[is.na(Test$Family_Hist_3)]<-mean(Test$Family_Hist_3, na.rm = TRUE)
+Test$Family_Hist_4[is.na(Test$Family_Hist_4)]<-mean(Test$Family_Hist_4, na.rm = TRUE)
+Test$Family_Hist_5[is.na(Test$Family_Hist_5)]<-mean(Test$Family_Hist_5, na.rm = TRUE)
+Test$Insurance_History_5[is.na(Test$Insurance_History_5)]<-mean(Test$Insurance_History_5, na.rm = TRUE)
+Test$Medical_History_1[is.na(Test$Medical_History_1)]<-median(Test$Medical_History_1, na.rm = TRUE)
+Test$Medical_History_10[is.na(Test$Medical_History_10)]<-median(Test$Medical_History_10, na.rm = TRUE)
+Test$Medical_History_15[is.na(Test$Medical_History_15)]<-median(Test$Medical_History_15, na.rm = TRUE)
+Test$Medical_History_24[is.na(Test$Medical_History_24)]<-median(Test$Medical_History_24, na.rm = TRUE)
+Test$Medical_History_32[is.na(Test$Medical_History_32)]<-median(Test$Medical_History_32, na.rm = TRUE)
+View(Test)
+any(is.na(Test))
+mmnorm <-function(x,minx,maxx) {z<-((x-minx)/(maxx-minx))
+return(z)
+}
+newdata <- read.csv("C:/Users/ashis/Downloads/Course Work/CS-513A Knowledge Discovery and Data Mining/Project/Project/train1.csv", na.strings = c("",NA))
+cor(newdata)
+newdata <- as.numeric(as.factor(newdata))
+cor(newdata)
+cor(newdata[1:127])
+newdata <- data.frame(newdata)
+cor(newdata[1:127])
+cor(newdata)
+library(xtable)
+Mat_table = xtable(cor(newdata))
+View(Mat_table)
+pca = princomp(newdata, cor = TRUE)
+summary(pca)
+pca = princomp(Training, cor = TRUE)
+summary(pca)
+#add a column
+Test$Response <- -1
+View(Test)
+comb <- cbind(Training, Test)
+comb <- rbind(Training, Test)
+View(comb)
+#Remove the identifier variable
+mydata <- subset(comb,select = -c(Response))
+#Check available variables
+colnames(mydata)
+#check variable class
+str(mydata)
+#create a dummy dataset
+library(dummies)
+#create a dummy dataset
+install.packages("dummies")
+library(dummies)
+new_my_data <- dummy.data.frame(mydata, c("Id","Product_Info_1","Product_Info_3","Product_Info_5","Product_Info_6","Product_Info_7",
+"Employment_Info_2","Employment_Info_3","Employment_Info_5","InsuredInfo_1","InsuredInfo_2","InsuredInfo_3","InsuredInfo_4","InsuredInfo_6","InsuredInfo_7",
+"Insurance_History_1","Insurance_History_2","Insurance_History_3","Insurance_History_4","Insurance_History_7","Insurance_History_8","Insurance_History_9",
+"Family_Hist_1","Medical_History_2","Medical_History_3","Medical_History_4","Medical_History_5","Medical_History_6","Medical_History_7","Medical_History_8","Medical_History_9","Medical_History_10",
+"Medical_History_11","Medical_History_12","Medical_History_13","Medical_History_14","Medical_History_15","Medical_History_16","Medical_History_17","Medical_History_18","Medical_History_19","Medical_History_20",
+"Medical_History_21","Medical_History_22","Medical_History_23","Medical_History_25","Medical_History_26","Medical_History_27","Medical_History_28","Medical_History_29","Medical_History_30",
+"Medical_History_31","Medical_History_32","Medical_History_33","Medical_History_34","Medical_History_35","Medical_History_36","Medical_History_37","Medical_History_38","Medical_History_39","Medical_History_40","Medical_History_41",
+"Medical_Keyword_1","Medical_Keyword_2","Medical_Keyword_3","Medical_Keyword_4","Medical_Keyword_5","Medical_Keyword_6","Medical_Keyword_7","Medical_Keyword_8","Medical_Keyword_9","Medical_Keyword_10","Medical_Keyword_11",
+"Medical_Keyword_12","Medical_Keyword_13","Medical_Keyword_14","Medical_Keyword_15","Medical_Keyword_16","Medical_Keyword_17","Medical_Keyword_18","Medical_Keyword_19","Medical_Keyword_20"))
+new_my_data <- dummy.data.frame(mydata, names = c("Id","Product_Info_1","Product_Info_3","Product_Info_5","Product_Info_6","Product_Info_7",
+"Employment_Info_2","Employment_Info_3","Employment_Info_5","InsuredInfo_1","InsuredInfo_2","InsuredInfo_3","InsuredInfo_4","InsuredInfo_6","InsuredInfo_7",
+"Insurance_History_1","Insurance_History_2","Insurance_History_3","Insurance_History_4","Insurance_History_7","Insurance_History_8","Insurance_History_9",
+"Family_Hist_1","Medical_History_2","Medical_History_3","Medical_History_4","Medical_History_5","Medical_History_6","Medical_History_7","Medical_History_8","Medical_History_9","Medical_History_10",
+"Medical_History_11","Medical_History_12","Medical_History_13","Medical_History_14","Medical_History_15","Medical_History_16","Medical_History_17","Medical_History_18","Medical_History_19","Medical_History_20",
+"Medical_History_21","Medical_History_22","Medical_History_23","Medical_History_25","Medical_History_26","Medical_History_27","Medical_History_28","Medical_History_29","Medical_History_30",
+"Medical_History_31","Medical_History_32","Medical_History_33","Medical_History_34","Medical_History_35","Medical_History_36","Medical_History_37","Medical_History_38","Medical_History_39","Medical_History_40","Medical_History_41",
+"Medical_Keyword_1","Medical_Keyword_2","Medical_Keyword_3","Medical_Keyword_4","Medical_Keyword_5","Medical_Keyword_6","Medical_Keyword_7","Medical_Keyword_8","Medical_Keyword_9","Medical_Keyword_10","Medical_Keyword_11",
+"Medical_Keyword_12","Medical_Keyword_13","Medical_Keyword_14","Medical_Keyword_15","Medical_Keyword_16","Medical_Keyword_17","Medical_Keyword_18","Medical_Keyword_19","Medical_Keyword_20"))
+#check the dataset
+str(new_my_data)
+new_my_data <- dummy.data.frame(mydata, names = -c("Product_Info_2","Product_Info_4","Ins_Age","Ht","Wt","BMI","Employment_Info_1","Employment_Info_4","Employment_Info_6","InsuredInfo_5","Insurance_History_5","Family_History_2","Family_History_3","Family_History_4","Family_History_5","Medical_History_1","Medical_History_24"))
+new_my_data <- dummy.data.frame(mydata, names = c("Product_Info_2","Product_Info_4","Ins_Age","Ht","Wt","BMI","Employment_Info_1","Employment_Info_4","Employment_Info_6","InsuredInfo_5","Insurance_History_5","Family_History_2","Family_History_3","Family_History_4","Family_History_5","Medical_History_1","Medical_History_24"))
+new_my_data <- data.frame(mydata, names = c("Id","Product_Info_1","Product_Info_3","Product_Info_5","Product_Info_6","Product_Info_7",
+"Employment_Info_2","Employment_Info_3","Employment_Info_5","InsuredInfo_1","InsuredInfo_2","InsuredInfo_3","InsuredInfo_4","InsuredInfo_6","InsuredInfo_7",
+"Insurance_History_1","Insurance_History_2","Insurance_History_3","Insurance_History_4","Insurance_History_7","Insurance_History_8","Insurance_History_9",
+"Family_Hist_1","Medical_History_2","Medical_History_3","Medical_History_4","Medical_History_5","Medical_History_6","Medical_History_7","Medical_History_8","Medical_History_9","Medical_History_10",
+"Medical_History_11","Medical_History_12","Medical_History_13","Medical_History_14","Medical_History_15","Medical_History_16","Medical_History_17","Medical_History_18","Medical_History_19","Medical_History_20",
+"Medical_History_21","Medical_History_22","Medical_History_23","Medical_History_25","Medical_History_26","Medical_History_27","Medical_History_28","Medical_History_29","Medical_History_30",
+"Medical_History_31","Medical_History_32","Medical_History_33","Medical_History_34","Medical_History_35","Medical_History_36","Medical_History_37","Medical_History_38","Medical_History_39","Medical_History_40","Medical_History_41",
+"Medical_Keyword_1","Medical_Keyword_2","Medical_Keyword_3","Medical_Keyword_4","Medical_Keyword_5","Medical_Keyword_6","Medical_Keyword_7","Medical_Keyword_8","Medical_Keyword_9","Medical_Keyword_10","Medical_Keyword_11",
+"Medical_Keyword_12","Medical_Keyword_13","Medical_Keyword_14","Medical_Keyword_15","Medical_Keyword_16","Medical_Keyword_17","Medical_Keyword_18","Medical_Keyword_19","Medical_Keyword_20"))
+new_my_data <- data.frame(mydata, names = c("Id","Product_Info_1","Product_Info_3","Product_Info_5","Product_Info_6","Product_Info_7",
+"Employment_Info_2","Employment_Info_3","Employment_Info_5","InsuredInfo_1","InsuredInfo_2","InsuredInfo_3","InsuredInfo_4","InsuredInfo_6","InsuredInfo_7",
+"Insurance_History_1","Insurance_History_2","Insurance_History_3","Insurance_History_4","Insurance_History_7","Insurance_History_8","Insurance_History_9",
+"Family_Hist_1","Medical_History_2","Medical_History_3","Medical_History_4","Medical_History_5","Medical_History_6","Medical_History_7","Medical_History_8","Medical_History_9","Medical_History_10",
+"Medical_History_11","Medical_History_12","Medical_History_13","Medical_History_14","Medical_History_15","Medical_History_16","Medical_History_17","Medical_History_18","Medical_History_19","Medical_History_20",
+"Medical_History_21","Medical_History_22","Medical_History_23","Medical_History_25","Medical_History_26","Medical_History_27","Medical_History_28","Medical_History_29","Medical_History_30",
+"Medical_History_31","Medical_History_32","Medical_History_33","Medical_History_34","Medical_History_35","Medical_History_36","Medical_History_37","Medical_History_38","Medical_History_39","Medical_History_40","Medical_History_41",
+"Medical_Keyword_1","Medical_Keyword_2","Medical_Keyword_3","Medical_Keyword_4","Medical_Keyword_5","Medical_Keyword_6","Medical_Keyword_7","Medical_Keyword_8","Medical_Keyword_9","Medical_Keyword_10","Medical_Keyword_11",
+"Medical_Keyword_12","Medical_Keyword_13","Medical_Keyword_14","Medical_Keyword_15","Medical_Keyword_16","Medical_Keyword_17","Medical_Keyword_18","Medical_Keyword_19","Medical_Keyword_20"))
+new_my_data <- dummy.data.frame(mydata, names = c("Id","Product_Info_1","Product_Info_3","Product_Info_5","Product_Info_6","Product_Info_7",
+"Employment_Info_2","Employment_Info_3","Employment_Info_5","InsuredInfo_1","InsuredInfo_2","InsuredInfo_3","InsuredInfo_4","InsuredInfo_6","InsuredInfo_7",
+"Insurance_History_1","Insurance_History_2","Insurance_History_3","Insurance_History_4","Insurance_History_7","Insurance_History_8","Insurance_History_9",
+"Family_Hist_1","Medical_History_2","Medical_History_3","Medical_History_4","Medical_History_5","Medical_History_6","Medical_History_7","Medical_History_8","Medical_History_9","Medical_History_10",
+"Medical_History_11","Medical_History_12","Medical_History_13","Medical_History_14","Medical_History_15","Medical_History_16","Medical_History_17","Medical_History_18","Medical_History_19","Medical_History_20",
+"Medical_History_21","Medical_History_22","Medical_History_23","Medical_History_25","Medical_History_26","Medical_History_27","Medical_History_28","Medical_History_29","Medical_History_30",
+"Medical_History_31","Medical_History_32","Medical_History_33","Medical_History_34","Medical_History_35","Medical_History_36","Medical_History_37","Medical_History_38","Medical_History_39","Medical_History_40","Medical_History_41",
+"Medical_Keyword_1","Medical_Keyword_2","Medical_Keyword_3","Medical_Keyword_4","Medical_Keyword_5","Medical_Keyword_6","Medical_Keyword_7","Medical_Keyword_8","Medical_Keyword_9","Medical_Keyword_10","Medical_Keyword_11",
+"Medical_Keyword_12","Medical_Keyword_13","Medical_Keyword_14","Medical_Keyword_15","Medical_Keyword_16","Medical_Keyword_17","Medical_Keyword_18","Medical_Keyword_19","Medical_Keyword_20"))
+new_my_data <- data.frame(mydata[3,5,9:13,16,21,28,33:37,60], names = c("Product_Info_2","Product_Info_4","Ins_Age","Ht","Wt","BMI","Employment_Info_1","Employment_Info_4","Employment_Info_6","InsuredInfo_5","Insurance_History_5","Family_History_2","Family_History_3","Family_History_4","Family_History_5","Medical_History_1","Medical_History_24"))
+new_my_data <- data.frame(mydata[3,5,9:13,16,21,28,33:37,60])#, names = c("Product_Info_2","Product_Info_4","Ins_Age","Ht","Wt","BMI","Employment_Info_1","Employment_Info_4","Employment_Info_6","InsuredInfo_5","Insurance_History_5","Family_History_2","Family_History_3","Family_History_4","Family_History_5","Medical_History_1","Medical_History_24"))
+#Random Forest
+# converting the Class column to factor Column
+class(Training$Response) #integer
+Training$Response<-as.factor(Training$Response)
+# Removing the dummy variables as facing problem with the model running
+Training <- Training[,-c(80:127)]
+View(Training)
+# Removng columns which are not required for the model(reason mentioned in DataCleaning file)
+Training <- Training[,c(-1,-3,-30,-35,-36,-37,-38,-48,-53,-62,-70)]
+View(Training)
+any(is.na(Training))
+# Getting the index values starting form 1 and then every fifth record(1,6,11,16,...)
+#index<-seq(from=1,to=nrow(Training),by=5)
+index <- sort(sample(nrow(Training), round(0.75*nrow(Training))))
+# Splitting the data into traing and test
+# Store every fifth record in a "test" dataset starting with the first record
+test<-Training[-index,]
+# Store the rest in the "training" dataset
+training<- Training[index,]
+# installing and loading the package randomForest
+# install.packages("randomForest")
+library('randomForest')
+# applying the random forest
+fit <- randomForest(Response~.,data = training, importance = TRUE, ntree= 500, mtry = 5 )
+# tells about which variables are important
+varImpPlot(fit)
+# Predicting the test data
+Prediction <- predict(fit,test)
+#confusion Matrix
+table(Actual=test[,69], Predicted = Prediction)
+# Error rate
+wrong<- (test[,69]!=Prediction )
+error_rate<-sum(wrong)/length(wrong)
+error_rate
+# applying the random forest
+fit <- randomForest(Response~.,data = training, importance = TRUE, ntree= 1000 )
+# tells about which variables are important
+varImpPlot(fit)
+# Predicting the test data
+Prediction <- predict(fit,test)
+#confusion Matrix
+table(Actual=test[,69], Predicted = Prediction)
+# Error rate
+wrong<- (test[,69]!=Prediction )
+error_rate<-sum(wrong)/length(wrong)
+error_rate
+#Create Random Indexes
+index<- sort(sample(nrow(Training),as.integer(0.75*nrow(Training))))
+library(kknn)
+#Taking k=3
+predict <- kknn(formula = Response~. , training,test, k=25)
+fit <- fitted(predict)
+table(test$Response , fit)
+#check accuracy for k=3
+accuracy3<- test$Response==fit3
+#check accuracy for k=3
+accuracy3<- test$Response==fit
+100*(sum(accuracy3)/length(accuracy3))
+#Taking k=3
+predict <- kknn(formula = Response~. , training,test, k=5)
+fit <- fitted(predict)
+table(test$Response , fit)
+#check accuracy for k=3
+accuracy3<- test$Response==fit
+100*(sum(accuracy3)/length(accuracy3))
+#Taking k=3
+predict <- kknn(formula = Response~. , training,test, k=50)
+fit <- fitted(predict)
+fit
+table(test$Response , fit)
+#check accuracy for k=3
+accuracy3<- test$Response==fit
+100*(sum(accuracy3)/length(accuracy3))
+set.seed(666)
+library(class)
+library(kknn)
+training <- training[,c(4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,21,24,26,28,29,31,32,33,34,40,42,47,54,61,63,64,67,74,79,80)]
+training <- Training[,c(4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,21,24,26,28,29,31,32,33,34,40,42,47,54,61,63,64,67,74,79,80)]
+Training <- read.csv("C:/Users/ashis/Downloads/Course Work/CS-513A Knowledge Discovery and Data Mining/Project/Project/train.csv", na.strings = c("",NA))
+Test <-  read.csv("C:/Users/ashis/Downloads/Course Work/CS-513A Knowledge Discovery and Data Mining/Project/Project/test.csv", na.strings = c("",NA))
+idx=seq(from=1,to=nrow(Training),by=5)
+test<-Training[idx,]
+training<-Training[-idx,]
+training <- Training[,c(4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,21,24,26,28,29,31,32,33,34,40,42,47,54,61,63,64,67,74,79,80)]
+test <- Test[,c(4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,21,24,26,28,29,31,32,33,34,40,42,47,54,61,63,64,67,74,79,80)]
+test$Response <- as.factor(test$Response)
+training$Response <- as.factor(training$Response)
+totalCols <- 35
+predict<-knn(training[,-1 * totalCols],test[,-1 * totalCols],training[,totalCols],k=25)
+test$Response
+test$Response <- -1
+View(test)
+predict<-knn(training[,-1 * totalCols],test[,-1 * totalCols],training[,totalCols],k=25)
+rm(list=ls())
+#Load the Dataset
+Training <- read.csv("C:/Users/ashis/Downloads/Course Work/CS-513A Knowledge Discovery and Data Mining/Project/Project/train.csv", na.strings = c("",NA))
+View(Training)
+Test <-  read.csv("C:/Users/ashis/Downloads/Course Work/CS-513A Knowledge Discovery and Data Mining/Project/Project/test.csv", na.strings = c("",NA))
+View(Test)
+#check NA's
+any(is.na(Training))
+any(is.na(Test))
+#Data Cleaning in Training Dataset
+library(skimr)
+summary(Training)
+TD <- read.csv("C:/Users/ashis/Downloads/Course Work/CS-513A Knowledge Discovery and Data Mining/Project/Project/train.csv")
+skim(TD)
+#Replacing Missing Values In Training Dataset by Mean or Median, Identified using Skim
+Training$Employment_Info_1[is.na(Training$Employment_Info_1)]<-mean(Training$Employment_Info_1, na.rm = TRUE)
+Training$Employment_Info_4[is.na(Training$Employment_Info_4)]<-mean(Training$Employment_Info_4, na.rm = TRUE)
+Training$Employment_Info_6[is.na(Training$Employment_Info_6)]<-mean(Training$Employment_Info_6, na.rm = TRUE)
+Training$InsuredInfo_5[is.na(Training$InsuredInfo_5)]<-mean(Training$InsuredInfo_5, na.rm = TRUE)
+Training$Family_Hist_2[is.na(Training$Family_Hist_2)]<-mean(Training$Family_Hist_2, na.rm = TRUE)
+Training$Family_Hist_3[is.na(Training$Family_Hist_3)]<-mean(Training$Family_Hist_3, na.rm = TRUE)
+Training$Family_Hist_4[is.na(Training$Family_Hist_4)]<-mean(Training$Family_Hist_4, na.rm = TRUE)
+Training$Family_Hist_5[is.na(Training$Family_Hist_5)]<-mean(Training$Family_Hist_5, na.rm = TRUE)
+Training$Insurance_History_5[is.na(Training$Insurance_History_5)]<-mean(Training$Insurance_History_5, na.rm = TRUE)
+Training$Medical_History_1[is.na(Training$Medical_History_1)]<-median(Training$Medical_History_1, na.rm = TRUE)
+Training$Medical_History_10[is.na(Training$Medical_History_10)]<-median(Training$Medical_History_10, na.rm = TRUE)
+Training$Medical_History_15[is.na(Training$Medical_History_15)]<-median(Training$Medical_History_15, na.rm = TRUE)
+Training$Medical_History_24[is.na(Training$Medical_History_24)]<-median(Training$Medical_History_24, na.rm = TRUE)
+Training$Medical_History_32[is.na(Training$Medical_History_32)]<-median(Training$Medical_History_32, na.rm = TRUE)
+View(Training)
+any(is.na(Training))
+#Replacing Missing Values In Test Dataset by Mean or Median, Identified using Skim
+Test$Employment_Info_1[is.na(Test$Employment_Info_1)]<-mean(Test$Employment_Info_1, na.rm = TRUE)
+Test$Employment_Info_4[is.na(Test$Employment_Info_4)]<-mean(Test$Employment_Info_4, na.rm = TRUE)
+Test$Employment_Info_6[is.na(Test$Employment_Info_6)]<-mean(Test$Employment_Info_6, na.rm = TRUE)
+Test$InsuredInfo_5[is.na(Test$InsuredInfo_5)]<-mean(Test$InsuredInfo_5, na.rm = TRUE)
+Test$Family_Hist_2[is.na(Test$Family_Hist_2)]<-mean(Test$Family_Hist_2, na.rm = TRUE)
+Test$Family_Hist_3[is.na(Test$Family_Hist_3)]<-mean(Test$Family_Hist_3, na.rm = TRUE)
+Test$Family_Hist_4[is.na(Test$Family_Hist_4)]<-mean(Test$Family_Hist_4, na.rm = TRUE)
+Test$Family_Hist_5[is.na(Test$Family_Hist_5)]<-mean(Test$Family_Hist_5, na.rm = TRUE)
+Test$Insurance_History_5[is.na(Test$Insurance_History_5)]<-mean(Test$Insurance_History_5, na.rm = TRUE)
+Test$Medical_History_1[is.na(Test$Medical_History_1)]<-median(Test$Medical_History_1, na.rm = TRUE)
+Test$Medical_History_10[is.na(Test$Medical_History_10)]<-median(Test$Medical_History_10, na.rm = TRUE)
+Test$Medical_History_15[is.na(Test$Medical_History_15)]<-median(Test$Medical_History_15, na.rm = TRUE)
+Test$Medical_History_24[is.na(Test$Medical_History_24)]<-median(Test$Medical_History_24, na.rm = TRUE)
+Test$Medical_History_32[is.na(Test$Medical_History_32)]<-median(Test$Medical_History_32, na.rm = TRUE)
+View(Test)
+any(is.na(Test))
+#Define max-min normalization function
+mmnorm <-function(x,minx,maxx) {z<-((x-minx)/(maxx-minx))
+return(z)
+}
+class(Training$Response) #integer
+Training$Response<-as.factor(Training$Response)
+# Removing the dummy variables as facing problem with the model running
+Training <- Training[,-c(80:127)]
+View(Training)
+# Removng columns which are not required for the model(reason mentioned in DataCleaning file)
+Training <- Training[,c(-1,-3,-30,-35,-36,-37,-38,-48,-53,-62,-70)]
+View(Training)
+# code for handling the missing values in traing data
+any(is.na(Training))
+# Getting the index values starting form 1 and then every fifth record(1,6,11,16,...)
+#index<-seq(from=1,to=nrow(Training),by=5)
+index <- sort(sample(nrow(Training), round(0.75*nrow(Training))))
+# Splitting the data into traing and test
+# Store every fifth record in a "test" dataset starting with the first record
+test<-Training[-index,]
+# Store the rest in the "training" dataset
+training<- Training[index,]
+#Logistic Regression
+# installing and loading the package nnet
+install.packages('nnet')
+library(nnet)
+# logistic regression model
+model <- multinom (Response~., data = training)
+predicted_scores <- predict(model, test, type = 'probs')
+predicted_class <- predict (model, test)
+#confusion matrix
+table(Actual = test$Response, Predicted = predicted_class)
+# Error rate
+mean(as.character(predicted_class) != as.character(test$Response))
+library(DataExplorer)
+plot_missing(Training)
+plot_correlation(Training)
+rm(list=ls())
+bmd <- read.csv("C:/Users/ashis/Downloads/Course Work/BIA-652B Multivariate Data Analysis/Project Proposal/Dataset/bank-additional/bank-additional.csv",
+sep = ";", stringsAsFactors = FALSE)
+bmd_full <- read.csv("C:/Users/ashis/Downloads/Course Work/BIA-652B Multivariate Data Analysis/Project Proposal/Dataset/bank-additional/bank-additional-full.csv",
+sep=";", stringsAsFactors = FALSE)
+library(DataExplorer)
+DataExplorer::create_report(bmd_full)
+#Load the Dataset
+Training <- read.csv("C:/Users/ashis/Downloads/Course Work/CS-513A Knowledge Discovery and Data Mining/Project/Project/train.csv", na.strings = c("",NA))
+Test <-  read.csv("C:/Users/ashis/Downloads/Course Work/CS-513A Knowledge Discovery and Data Mining/Project/Project/test.csv", na.strings = c("",NA))
+DataExplorer::create_report(Training)
+library(ggplot2)
+library(knitr)
+library(cluster)
+library(HSAUR)
+library(fpc)
+library(lattice)
+library(rpart)
+library(kernlab)
+library(randomForest)
+#stacked plot
+#Marital
+ggplot(bmd_full, aes(marital, fill = marital)) + geom_bar() + labs(title = "Bank Additional - Marital")
+#Education
+ggplot(bmd_full,aes(education, fill=education)) + geom_bar() + labs(title = "Bank Additional - Education")
+#age
+#density plot
+ggplot(bmd_full,aes(age, fill=age)) + geom_density(fill='mediumorchid1') + labs(title = "Bank Additional - Age")
+#job
+ggplot(bmd_full,aes(job, fill=job)) + geom_bar() + labs(title = "Bank Additional - Job")
+#Job vs education
+ggplot(bmd_full,aes(x= job, fill = education)) + geom_bar() + labs(title = "Job vs Education", x="JOB", y="EDUCATION")
+#Heat Map (for 3 or more variables)
+ggplot(bmd_full, aes(x = job, y = education))+
+geom_raster(aes(fill = age))+
+labs(title ="Heat Map", x = "JOB", y = "Education")
+#Jobs with university degree
+ggplot(bmd_full, aes(job, fill = job)) + geom_bar() + labs(title = "Jobs with University Degree")
+#age
+#density plot
+ggplot(bmd_full,aes(age, y, fill=age, fill= y)) + geom_density(fill='mediumorchid1') + labs(title = "Bank Additional - Age")
+#age
+#density plot
+?ggplot()
+ggplot(bmd_full,aes(age, y, fill=age)) + geom_density(fill='mediumorchid1') + labs(title = "Bank Additional - Age")
+ggplot(bmd_full,aes(age, y)) + geom_density(fill='mediumorchid1') + labs(title = "Bank Additional - Age")
+#age
+#density plot
+ggplot(bmd_full,aes(age, fill=age)) + geom_density(fill='mediumorchid1') + labs(title = "Bank Additional - Age")
+getwd()
+setwd("C:\Users\ashis\Downloads\Course Work\BIA-652B Multivariate Data Analysis\Project Proposal\Dataset\bank-additional")
+setwd("C:/Users/ashis/Downloads/Course Work/BIA-652B Multivariate Data Analysis/Project Proposal/Dataset/bank-additional")
+rmarkdown::render("word_document","FinalProject.Rmd")
+rmarkdown::render("FinalProject.Rmd","word_document")
+install.packages("knitr")
+install.packages("knitr")
+install.packages("knitr")
+rmarkdown::render("FinalProject.Rmd","word_document")
